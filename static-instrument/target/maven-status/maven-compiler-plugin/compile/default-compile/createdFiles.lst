@@ -1,0 +1,3 @@
+com/slark/agent/DefaultTransformer.class
+com/slark/agent/PreMainTraceAgent.class
+com/slark/agent/IndexControllerTransformer.class
