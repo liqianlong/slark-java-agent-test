@@ -6,8 +6,8 @@ package com.slark.target;
  */
 public class InstrumentTarget {
 
-    public void sayHello() {
-        System.out.println("hello world");
+    public String sayHello() {
+        return "hello world";
     }
 
 }

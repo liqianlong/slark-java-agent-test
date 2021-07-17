@@ -1,5 +1,6 @@
 package com.slark;
 
+import com.slark.target.InstrumentTarget;
 import com.slark.web.IndexController;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

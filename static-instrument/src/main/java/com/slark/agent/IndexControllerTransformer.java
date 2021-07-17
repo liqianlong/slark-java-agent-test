@@ -1,9 +1,11 @@
 package com.slark.agent;
 
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtMethod;
-import javassist.NotFoundException;
+import com.alibaba.fastjson.JSON;
+import javassist.*;
+import net.bytebuddy.ByteBuddy;
+import net.bytebuddy.description.modifier.Visibility;
+import net.bytebuddy.implementation.FixedValue;
+import net.bytebuddy.matcher.ElementMatchers;
 import sun.instrument.TransformerManager;
 
 import java.lang.instrument.ClassFileTransformer;
@@ -21,27 +23,16 @@ public class IndexControllerTransformer implements ClassFileTransformer {
 
         if (className.contains("com/slark/target/InstrumentTarget")) {
             System.out.println("premain load Class: " + className);
-            try {
-                ClassPool classPool = ClassPool.getDefault();
-                CtClass clazz = classPool.get("com.slark.target.InstrumentTarget");
-                CtMethod sayHello = clazz.getDeclaredMethod("sayHello");
 
-                String methodBody = "{System.out.println(\"hello world premain\");}";
-
-                sayHello.setBody(methodBody);
-                byte[] byteCode = clazz.toBytecode();
-
-                clazz.detach();
-
-                return byteCode;
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
+            byte[] bytes = new ByteBuddy().subclass(Object.class)
+                    .name("com.slark.target.InstrumentTarget")
+                    .defineMethod("sayHello", String.class, Visibility.PUBLIC)
+                    .intercept(FixedValue.value("premain hello world"))
+                    .make()
+                    .getBytes();
+            System.out.println("get new class");
+            return bytes;
         }
-
-
-        return null;
+        return classfileBuffer;
     }
 }
