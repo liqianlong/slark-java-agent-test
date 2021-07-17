@@ -1,10 +1,6 @@
 package com.slark.agent;
 
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtMethod;
-import javassist.NotFoundException;
-import sun.instrument.TransformerManager;
+import javassist.*;
 
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
@@ -23,7 +19,9 @@ public class IndexControllerTransformer implements ClassFileTransformer {
             System.out.println("premain load Class: " + className);
             try {
                 ClassPool classPool = ClassPool.getDefault();
+                classPool.appendClassPath(new LoaderClassPath(loader));
                 CtClass clazz = classPool.get("com.slark.target.InstrumentTarget");
+                System.out.println("clazz=" + clazz);
                 CtMethod sayHello = clazz.getDeclaredMethod("sayHello");
 
                 String methodBody = "{System.out.println(\"hello world premain\");}";
